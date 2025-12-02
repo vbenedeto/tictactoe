@@ -30,7 +30,7 @@ const Gameboard = (function () {
 })();
 
 function createPlayer(name, marker) {
-    return { name, marker };
+  return { name, marker };
 }
 
 const DisplayController = (function () {
@@ -55,18 +55,18 @@ const DisplayController = (function () {
 
       square.addEventListener("mouseenter", () => {
 
-      if (GameController.getIsGameOver()) {
-        return;
-      }
+        if (GameController.getIsGameOver()) {
+          return;
+        }
 
-      const board = Gameboard.getBoard();
-      const index = Number(square.dataset.index);
+        const board = Gameboard.getBoard();
+        const index = Number(square.dataset.index);
 
-      if (board[index] === "") {
-        const marker = GameController.getActiveMarker();
-        square.style.setProperty('--hover-marker', `"${marker}"`);
-        square.classList.add('hover-state');
-      }
+        if (board[index] === "") {
+          const marker = GameController.getActiveMarker();
+          square.style.setProperty('--hover-marker', `"${marker}"`);
+          square.classList.add('hover-state');
+        }
       })
 
       square.addEventListener("mouseleave", () => {
@@ -83,7 +83,7 @@ const DisplayController = (function () {
 
   function displayMessage(message) {
     messageDisplay.textContent = `${message}`;
-    
+
   }
 
   return {
@@ -99,10 +99,11 @@ const GameController = (function () {
   const player2 = createPlayer("Player O", "O");
   let activePlayer = player1;
   let isGameOver = false;
+  const boardElement = document.querySelector(".board");
 
   function switchPlayer() {
     if (activePlayer === player1) {
-      activePlayer = player2;  
+      activePlayer = player2;
     } else {
       activePlayer = player1;
     }
@@ -111,27 +112,26 @@ const GameController = (function () {
   function checkWin() {
     const board = Gameboard.getBoard();
     const winConditions = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 4, 8],
-      [2, 4, 6],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8]
+      { combo: [0, 1, 2], className: 'win-row-1' },
+      { combo: [3, 4, 5], className: 'win-row-2' },
+      { combo: [6, 7, 8], className: 'win-row-3' },
+      { combo: [0, 4, 8], className: 'win-diag-1' },
+      { combo: [2, 4, 6], className: 'win-diag-2' },
+      { combo: [0, 3, 6], className: 'win-col-1' },
+      { combo: [1, 4, 7], className: 'win-col-2' },
+      { combo: [2, 5, 8], className: 'win-col-3' }
     ];
 
     for (const condition of winConditions) {
-      const [a, b, c] = condition;
+      const { combo, className } = condition;
+      const [a, b, c] = combo;
 
       if (
         board[a] !== "" && board[a] === board[b] && board[a] === board[c]
       ) {
-        return true;
+        return className;
       }
-      
     }
-
     return false;
   }
 
@@ -140,7 +140,7 @@ const GameController = (function () {
 
     if (board.includes("")) {
       return false;
-    } 
+    }
 
     return true;
   }
@@ -157,9 +157,12 @@ const GameController = (function () {
     Gameboard.placeMark(index, activePlayer.marker);
     DisplayController.renderBoard();
 
-    if (checkWin()) {
+    const winClass = checkWin();
+
+    if (winClass) {
       DisplayController.displayMessage(`${activePlayer.name} WINS!`);
       isGameOver = true;
+      boardElement.classList.add('game-won', winClass);
       return;
     }
 
@@ -178,6 +181,7 @@ const GameController = (function () {
     activePlayer = player1;
     isGameOver = false;
     DisplayController.renderBoard();
+    boardElement.classList.remove('game-won');
     DisplayController.displayMessage(`Player X starts!`);
   }
 

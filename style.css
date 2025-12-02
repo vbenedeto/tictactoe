@@ -1,6 +1,11 @@
 * {
   margin: 0;
   box-sizing: border-box;
+  font-family: "Roboto Mono", monospace;
+  font-weight: 500;
+}
+
+body {
   background-color: black;
 }
 
@@ -13,17 +18,13 @@ main {
   gap: 35px;
 }
 
-button {
-  cursor: pointer;
-}
-
 h2,
 #restart-btn {
   color: white;
 }
 
 h2 {
-  font-size: 50px;
+  font-size: 60px;
 }
 
 #restart-btn {
@@ -31,7 +32,9 @@ h2 {
   padding: 10px 20px;
   border: none;
   border-radius: 6px;
-  font-size: 16px;
+  font-size: 20px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
 .board {
@@ -40,11 +43,13 @@ h2 {
   font-size: 10rem;
   grid-template-rows: 1fr 1fr 1fr;
   border: 2px solid red;
+  position: relative;
 }
 
 .square {
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 200px;
   height: 200px;
   color: white;
@@ -57,4 +62,72 @@ h2 {
   content: var(--hover-marker);
   position: absolute;
   opacity: 0.4;
+}
+
+/* --- WIN COMBINATION BOARD LINES --- */
+.board::after {
+  content: "";
+  position: absolute;
+  background-color: red;
+  z-index: 10;
+  height: 6px;
+  width: 141.3%;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.board.game-won::after {
+  opacity: 1;
+}
+
+/* --- HORIZONTAL LINES --- */
+.board.win-row-1::after {
+  top: 16.6%
+}
+
+.board.win-row-2::after {
+  top: 50%;
+}
+
+.board.win-row-3::after {
+  top: 83.3%;
+}
+
+/* --- DIAGONAL LINES --- */
+.board.win-diag-1::after,
+.board.win-diag-2::after {
+  top: 50%;
+  transform-origin: center center;
+}
+
+.board.win-diag-1::after {
+  transform: translate(-14.6%, -43%) rotate(45deg);
+}
+
+.board.win-diag-2::after {
+  transform: translate(-14.6%, -43%) rotate(-45deg);
+}
+
+/* --- VERTICAL LINES --- */
+.board.win-col-1::after,
+.board.win-col-2::after,
+.board.win-col-3::after {
+  height: 100%;
+  width: 6px;
+  top: 0;
+}
+
+.board.win-col-1::after {
+  left: 16.66%;
+  transform: translateX(-50%);
+}
+
+.board.win-col-2::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.board.win-col-3::after {
+  left: 83.33%;
+  transform: translateX(-50%);
 }
