@@ -1,15 +1,37 @@
 * {
   margin: 0;
   box-sizing: border-box;
-  /* border: 1px solid red; */
   background-color: black;
 }
 
 main {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   min-height: 100vh;
   align-items: center;
+  gap: 35px;
+}
+
+button {
+  cursor: pointer;
+}
+
+h2,
+#restart-btn {
+  color: white;
+}
+
+h2 {
+  font-size: 50px;
+}
+
+#restart-btn {
+  background: red;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
 }
 
 .board {
@@ -17,6 +39,7 @@ main {
   grid-template-columns: 1fr 1fr 1fr;
   font-size: 10rem;
   grid-template-rows: 1fr 1fr 1fr;
+  border: 2px solid red;
 }
 
 .square {
@@ -24,4 +47,14 @@ main {
   justify-content: center;
   width: 200px;
   height: 200px;
+  color: white;
+  cursor: pointer;
+  border: 2px solid red;
+  position: relative;
+}
+
+.square.hover-state::after {
+  content: var(--hover-marker);
+  position: absolute;
+  opacity: 0.4;
 }

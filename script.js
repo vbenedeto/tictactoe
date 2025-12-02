@@ -16,10 +16,15 @@ const Gameboard = (function () {
     board = ["", "", "", "", "", "", "", "", ""];
   }
 
+  function checkIfSquareIsEmpty(index) {
+    return board[index] === "";
+  }
+
   return {
     getBoard,
     placeMark,
-    reset
+    reset,
+    checkIfSquareIsEmpty
   };
 
 })();
@@ -38,7 +43,6 @@ const DisplayController = (function () {
 
     boardArray.forEach((marker, index) => {
       squares[index].textContent = marker;
-
     })
   }
 
@@ -47,6 +51,26 @@ const DisplayController = (function () {
       square.addEventListener("click", () => {
         const clickedSquare = Number(square.dataset.index);
         GameController.playRound(Number(clickedSquare));
+      })
+
+      square.addEventListener("mouseenter", () => {
+
+      if (GameController.getIsGameOver()) {
+        return;
+      }
+
+      const board = Gameboard.getBoard();
+      const index = Number(square.dataset.index);
+
+      if (board[index] === "") {
+        const marker = GameController.getActiveMarker();
+        square.style.setProperty('--hover-marker', `"${marker}"`);
+        square.classList.add('hover-state');
+      }
+      })
+
+      square.addEventListener("mouseleave", () => {
+        square.classList.remove('hover-state');
       })
     })
   }
@@ -71,7 +95,6 @@ const DisplayController = (function () {
 })();
 
 const GameController = (function () {
-
   const player1 = createPlayer("Player X", "X");
   const player2 = createPlayer("Player O", "O");
   let activePlayer = player1;
@@ -123,13 +146,11 @@ const GameController = (function () {
   }
 
   function playRound(index) {
-    const board = Gameboard.getBoard();
-
     if (isGameOver) {
       return;
     }
 
-    if (board[index] !== "") {
+    if (!Gameboard.checkIfSquareIsEmpty(index)) {
       return;
     }
 
@@ -159,10 +180,12 @@ const GameController = (function () {
     DisplayController.renderBoard();
     DisplayController.displayMessage(`Player X starts!`);
   }
-  
+
   return {
     playRound,
-    resetGame
+    resetGame,
+    getActiveMarker: () => activePlayer.marker,
+    getIsGameOver: () => isGameOver,
   }
 })();
 
